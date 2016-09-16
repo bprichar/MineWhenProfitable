@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from selenium import webdriver
 import sys
 from PyQt4.QtGui import QApplication
 from PyQt4.QtCore import QUrl
@@ -19,9 +20,14 @@ class Render(QWebPage):
         self.app.quit()
 
 url = 'https://minergate.com/calculator/cryptonote'
-r = Render(url)
-html = r.frame.toHtml()
-ascii_html = str(html.toAscii())
-soup = BeautifulSoup(ascii_html, 'html.parser')
-print soup.prettify()
-print soup.find_all("button", class_="dropdown-toggle")
+#r = Render(url)
+#html = r.frame.toHtml()
+#ascii_html = str(html.toAscii())
+#soup = BeautifulSoup(ascii_html, 'html.parser')
+#print soup.prettify()
+#print soup.find_all("button", class_="dropdown-toggle")
+
+driver = webdriver.Chrome('/home/bpr/Downloads/chromedriver')
+driver.get(url)
+the_button = driver.find_elements_by_class_name('dropdown-menu__entry')
+print the_button[0].text
