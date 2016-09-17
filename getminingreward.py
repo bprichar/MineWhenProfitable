@@ -27,7 +27,9 @@ url = 'https://minergate.com/calculator/cryptonote'
 #print soup.prettify()
 #print soup.find_all("button", class_="dropdown-toggle")
 
-driver = webdriver.Chrome('/home/bpr/Downloads/chromedriver')
+driver = webdriver.Chrome('/home/brad/Downloads/chromedriver')
 driver.get(url)
-the_button = driver.find_elements_by_class_name('dropdown-menu__entry')
-print the_button[0].text
+the_button = driver.find_elements_by_css_selector('button.btn.dropdown-toggle') # find the Currency Dropdown
+the_button[1].click() # And click it
+dollars = driver.find_elements_by_class_name('dropdown-menu__entry')[1] # find Dollars
+dollars.click() # and click it
