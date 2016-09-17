@@ -1,35 +1,36 @@
 #!/usr/bin/env python
 
 from selenium import webdriver
-import sys
-from PyQt4.QtGui import QApplication
-from PyQt4.QtCore import QUrl
-from PyQt4.QtWebKit import QWebPage
 from bs4 import BeautifulSoup
-
-class Render(QWebPage):
-    def __init__(self, url):
-        self.app = QApplication(sys.argv)
-        QWebPage.__init__(self)
-        self.loadFinished.connect(self._loadFinished)
-        self.mainFrame().load(QUrl(url))
-        self.app.exec_()
-
-    def _loadFinished(self, result):
-        self.frame = self.mainFrame()
-        self.app.quit()
+import re
+from time import sleep
 
 url = 'https://minergate.com/calculator/cryptonote'
-#r = Render(url)
-#html = r.frame.toHtml()
-#ascii_html = str(html.toAscii())
-#soup = BeautifulSoup(ascii_html, 'html.parser')
-#print soup.prettify()
-#print soup.find_all("button", class_="dropdown-toggle")
 
 driver = webdriver.Chrome('/home/brad/Downloads/chromedriver')
+#driver = webdriver.PhantomJS()
 driver.get(url)
 the_button = driver.find_elements_by_css_selector('button.btn.dropdown-toggle') # find the Currency Dropdown
 the_button[1].click() # And click it
 dollars = driver.find_elements_by_class_name('dropdown-menu__entry')[1] # find Dollars
 dollars.click() # and click it
+sleep(10)
+
+the_page = driver.page_source
+soup = BeautifulSoup(the_page, 'html.parser')
+titles = soup.find_all("th", class_="currency-title")
+symbols = []
+for title in titles:
+    symbol = title.find_all("span", class_="muted")[0].get_text().encode('ascii').lower()
+    symbols.append(symbol)
+
+conversion_row = soup.find_all("tr", class_="conversion-row")[0]
+rate_list = conversion_row.find_all(string=re.compile("[0-9]"))
+
+rewards = {}
+for i in xrange(len(symbols)):
+    rewards[symbols[i]] = rate_list[i]
+
+print rewards
+
+driver.close()
