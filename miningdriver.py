@@ -9,6 +9,7 @@ import re
 from time import sleep
 import thread
 import os
+from pyvirtualdisplay import Display
 
 TRANSMISSION_CHARGE = 0.04 # $/kWh
 POWER_CONSUMPTION = 95.0 # W
@@ -94,6 +95,8 @@ def stop_mining():
         mining_thread.exit()
         already_mining = False
 
+display = Display()
+display.start()
 logfile = open('mining_log.txt', 'w')
 
 while True:
@@ -118,4 +121,4 @@ while True:
         logfile.close()
         exit()
     except Exception as e:
-        logfile.write(str(Exception) + '\n')
+        logfile.write(str(Exception.message) + '\n')
