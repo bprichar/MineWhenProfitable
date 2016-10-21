@@ -113,5 +113,9 @@ while True:
             stop_mining()
 
         sleep(300)
+    except KeyboardInterrupt:
+        stop_mining()
+        logfile.close()
+        exit()
     except Exception as e:
         logfile.write(str(Exception) + '\n')
