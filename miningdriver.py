@@ -94,19 +94,24 @@ def stop_mining():
         mining_thread.exit()
         already_mining = False
 
+logfile = open('mining_log.txt', 'w')
+
 while True:
-    electricity_price = getElectricityPrice()
-    cost_rate = electricity_price * (POWER_CONSUMPTION / HASH_RATE) / 3600 # $/kH
-    currency, reward_rate = getMaxReward()
-    profit = reward_rate - cost_rate # $/kH
+    try:
+        electricity_price = getElectricityPrice()
+        cost_rate = electricity_price * (POWER_CONSUMPTION / HASH_RATE) / 3600 # $/kH
+        currency, reward_rate = getMaxReward()
+        profit = reward_rate - cost_rate # $/kH
 
-    print "Cost Rate = $", cost_rate, "/kH"
-    print "Reward Rate = $", reward_rate, "/kH, mining", currency
-    print "Profit = $", profit, "/kH"
+        print "Cost Rate = $", cost_rate, "/kH"
+        print "Reward Rate = $", reward_rate, "/kH, mining", currency
+        print "Profit = $", profit, "/kH"
 
-    if profit > 0:
-        mine(currency)
-    else:
-        stop_mining()
+        if profit > 0:
+            mine(currency)
+        else:
+            stop_mining()
 
-    sleep(300)
+        sleep(300)
+    except Exception as e:
+        logfile.write(str(Exception) + '\n')
